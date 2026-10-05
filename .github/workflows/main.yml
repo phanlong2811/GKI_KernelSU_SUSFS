@@ -100,9 +100,9 @@ on:
         type: boolean
         default: true
       use_net:
-        description: "Networking"
+        description: "Networking (off by default: breaks mobile data on Xiaomi 25128PNA1C)"
         type: boolean
-        default: true
+        default: false
       use_ds:
         description: "DroidSpaces"
         type: boolean
