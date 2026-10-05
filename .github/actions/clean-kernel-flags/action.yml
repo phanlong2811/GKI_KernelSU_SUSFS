@@ -18,6 +18,12 @@ runs:
           sed -i 's/-dirty//' common/scripts/setlocalversion
         fi
 
+        # Drop the maintainer-style "@" from the version banner (user@host -> user-host)
+        # so /proc/version doesn't trip "@ mention" kernel identity checks
+        grep -l 'LINUX_COMPILE_BY "@" LINUX_COMPILE_HOST' common/init/*.c 2>/dev/null \
+          | xargs -r sed -i 's/LINUX_COMPILE_BY "@" LINUX_COMPILE_HOST/LINUX_COMPILE_BY "-" LINUX_COMPILE_HOST/'
+        grep -n 'LINUX_COMPILE_BY' common/init/*.c || echo "WARNING: LINUX_COMPILE_BY banner not found"
+
         # Commit changes to avoid dirty state during build
         cd ${{ github.workspace }}/kernel/common
         git add .
