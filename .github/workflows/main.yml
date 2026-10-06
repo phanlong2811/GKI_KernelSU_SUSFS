@@ -103,10 +103,6 @@ on:
         description: "Networking (off by default: breaks mobile data on Xiaomi 25128PNA1C)"
         type: boolean
         default: false
-      net_test:
-        description: "TEMP bisect of use_net: none | bbr (BBRv1+fq only) | cfg (networking-config, no patch) | patch (BBRv3+CIFS only)"
-        type: string
-        default: "none"
       use_ds:
         description: "DroidSpaces"
         type: boolean
@@ -570,7 +566,6 @@ jobs:
           [ "${{ inputs.use_nomount }}" = "true" ] && FEATURES="${FEATURES}NoMount+"
           [ "${{ inputs.use_bbg }}" = "true" ] && FEATURES="${FEATURES}BBG+"
           [ "${{ inputs.use_net }}" = "true" ] && FEATURES="${FEATURES}NET+"
-          [ "${{ inputs.net_test }}" != "none" ] && FEATURES="${FEATURES}NETT-${{ inputs.net_test }}+"
           [ "${{ inputs.use_ds }}" = "true" ] && FEATURES="${FEATURES}DS+"
           [ "${{ inputs.use_ntsync }}" = "true" ] && FEATURES="${FEATURES}NTSync+"
           [ "${{ inputs.use_ptrace }}" = "true" ] && FEATURES="${FEATURES}Ptrace+"

@@ -346,43 +346,13 @@ jobs:
       uses: ./.github/actions/bbg
 
     - name: Setup Networking
-      if: contains(format('+{0}+', inputs.feature_set), '+NET+') || inputs.feature_set == 'All'
+      if: contains(inputs.feature_set, 'NET') || inputs.feature_set == 'All'
       uses: ./.github/actions/networking
       with:
         version: ${{ inputs.version }}
         kernel_version: ${{ inputs.kernel_version }}
         android_version: ${{ inputs.android_version }}
         sublevel: ${{ steps.extract.outputs.sublevel }}
-
-    - name: Net test - BBRv1 + fq only
-      if: contains(inputs.feature_set, 'NETT-bbr')
-      uses: ./.github/actions/set-kernel-config
-      with:
-        config_list: |
-          CONFIG_TCP_CONG_ADVANCED=y
-          CONFIG_TCP_CONG_BBR=y
-          CONFIG_TCP_CONG_CUBIC=y
-          CONFIG_DEFAULT_BBR=y
-          CONFIG_DEFAULT_TCP_CONG="bbr"
-          CONFIG_NET_SCH_FQ=y
-
-    - name: Net test - networking-config only (no source patch)
-      if: contains(inputs.feature_set, 'NETT-cfg')
-      uses: ./.github/actions/networking-config
-
-    - name: Net test - BBRv3 patch + CIFS only
-      if: contains(inputs.feature_set, 'NETT-patch')
-      uses: ./.github/actions/bbrv3
-      with:
-        version: ${{ inputs.version }}
-        kernel_version: ${{ inputs.kernel_version }}
-        sublevel: ${{ steps.extract.outputs.sublevel }}
-
-    - name: Net test - CIFS
-      if: contains(inputs.feature_set, 'NETT-patch')
-      uses: ./.github/actions/cifs
-      with:
-        version: ${{ inputs.version }}
 
     - name: DroidSpaces-OSS Patches
       if: contains(inputs.feature_set, 'DS') || inputs.feature_set == 'All'
