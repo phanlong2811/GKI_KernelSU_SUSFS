@@ -379,7 +379,7 @@ jobs:
         sublevel: ${{ steps.extract.outputs.sublevel }}
 
     - name: Net test - CIFS
-      if: contains(inputs.feature_set, 'NETT-patch')
+      if: contains(inputs.feature_set, 'NETT-patch') || contains(inputs.feature_set, 'NETT-cfgcifs')
       uses: ./.github/actions/cifs
       with:
         version: ${{ inputs.version }}
