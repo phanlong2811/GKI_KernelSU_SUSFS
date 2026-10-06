@@ -100,9 +100,9 @@ on:
         type: boolean
         default: true
       use_net:
-        description: "Networking (off by default: breaks mobile data on Xiaomi 25128PNA1C)"
+        description: "Networking (IP Set, BBR, CAKE, TTL, WireGuard; CIFS removed because it broke mobile data on Xiaomi 25128PNA1C)"
         type: boolean
-        default: false
+        default: true
       use_ds:
         description: "DroidSpaces"
         type: boolean

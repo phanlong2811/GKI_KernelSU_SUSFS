@@ -1,5 +1,5 @@
 name: 'Setup Networking'
-description: 'Set up all networking options (IP Set, TCP CC, Qdisc, BBRv3, CIFS, Wireguard)'
+description: 'Set up all networking options (IP Set, TCP CC, Qdisc, BBRv3, Wireguard)'
 inputs:
   version:
     description: 'Kernel config version (e.g., android15-6.6)'
@@ -27,7 +27,5 @@ runs:
         kernel_version: ${{ inputs.kernel_version }}
         sublevel: ${{ inputs.sublevel }}
 
-    - name: Setup CIFS Configs
-      uses: ./.github/actions/cifs
-      with:
-        version: ${{ inputs.version }}
+    # CIFS intentionally NOT enabled: CONFIG_CIFS=y/NETFS_SUPPORT=y (with netfs.ko
+    # dropped from modules.bzl) kills mobile data on Xiaomi 25128PNA1C android16-6.12.
