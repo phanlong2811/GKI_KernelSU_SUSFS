@@ -23,6 +23,18 @@ runs:
         cp "${{ github.workspace }}/susfs4ksu/kernel_patches/include/linux/"* "${{ github.workspace }}/kernel/common/include/linux/"
         cp ${{ github.workspace }}/susfs4ksu/kernel_patches/50_add_susfs_in_gki-${{ inputs.version }}.patch ./
 
+    # susfs4ksu rebased its 6.12 patch onto sublevel 92 (bd275689); older 6.12
+    # sublevels still have the pre-refactor show_smaps_rollup loop.
+    - name: Rewrite SUSFS show_smaps_rollup Hunks for 6.12 < 92
+      shell: bash
+      if: inputs.version == 'android16-6.12'
+      working-directory: ${{ github.workspace }}/kernel/common
+      run: |
+        SUBLEVEL="${{ inputs.sublevel }}"
+        if [[ "$SUBLEVEL" =~ ^[0-9]+$ ]] && [ "$SUBLEVEL" -lt 92 ]; then
+          python3 "${{ github.workspace }}/.github/scripts/susfs_612_pre92_rollup.py" 50_add_susfs_in_gki-${{ inputs.version }}.patch
+        fi
+
     # Fake patches restored selectively: only -le (lower sublevel, context-adding)
     # blocks are enabled. -ge blocks (context-removal, e.g. deleting #include lines
     # like trace/hooks/blk.h and trace/hooks/mm.h) stay disabled because they break
