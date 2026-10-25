@@ -47,8 +47,13 @@ cat > "$BAKASU_KSU/bakasu_susfs_compat.c" <<'COMPAT'
  * Stubs return simple values so SUSFS static wrappers fall back to original
  * behavior when CONFIG_KSU_SUSFS is enabled but BakaSU can't provide full
  * SUSFS integration.
+ *
+ * All stubs are __weak: newer BakaSU (d5e9e025+) defines these itself in
+ * feature/selinux_hide.c and preinit/preinit.c, and its strong definitions
+ * must win instead of colliding at link time.
  */
 
+#include <linux/compiler.h>
 #include <linux/fs.h>
 
 struct filename;
@@ -62,12 +67,12 @@ struct user_arg_ptr;
 /*   Return -EINVAL so callers fall back to original behavior.         */
 /* ------------------------------------------------------------------ */
 
-ssize_t my_write_context(struct file *file, char *buf, size_t size)
+__weak ssize_t my_write_context(struct file *file, char *buf, size_t size)
 {
     return -EINVAL;
 }
 
-ssize_t my_write_access(struct file *file, char *buf, size_t size)
+__weak ssize_t my_write_access(struct file *file, char *buf, size_t size)
 {
     return -EINVAL;
 }
@@ -79,7 +84,7 @@ ssize_t my_write_access(struct file *file, char *buf, size_t size)
 /*   Replaces selinux_setprocattr in LSM hooks. Return 0 (allow).     */
 /* ------------------------------------------------------------------ */
 
-int my_setprocattr(const char *name, void *value, size_t size)
+__weak int my_setprocattr(const char *name, void *value, size_t size)
 {
     return 0;
 }
@@ -91,13 +96,13 @@ int my_setprocattr(const char *name, void *value, size_t size)
 /*   directory, so we provide minimal stubs here.                     */
 /* ------------------------------------------------------------------ */
 
-int ksu_setup_preinit_file(struct filename **filename_ptr,
+__weak int ksu_setup_preinit_file(struct filename **filename_ptr,
                            struct user_arg_ptr *argv_user)
 {
     return -EINVAL;
 }
 
-int ksu_preinit_handle_post_execveat(int *fd, struct filename **filename_ptr,
+__weak int ksu_preinit_handle_post_execveat(int *fd, struct filename **filename_ptr,
                                      void *argv_user, void *envp_user,
                                      int *flags, int *retval, int *preinit_fd)
 {
