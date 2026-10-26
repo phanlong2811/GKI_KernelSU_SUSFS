@@ -480,6 +480,9 @@ jobs:
             CONFIG_USB_CONFIGFS_F_PRINTER=y
             CONFIG_TARGET_CORE=y
             CONFIG_USB_CONFIGFS_F_TCM=y
+            CONFIG_USB_DUMMY_HCD=y
+            CONFIG_USB_RAW_GADGET=y
+            CONFIG_USB_GADGETFS=y
 
       - name: Enable BPF Stack (BTF + eBPF + FUSE-BPF)
         if: contains(inputs.feature_set, 'BPF')
