@@ -450,6 +450,26 @@ jobs:
             CONFIG_SMB_SERVER_SMBDIRECT=n
             CONFIG_SMB_SERVER_KERBEROS5=n
 
+      - name: Apply USB Arsenal gadget patches (DVD-ROM, HID bInterval)
+        if: inputs.kernel_version == '6.12'
+        shell: bash
+        working-directory: ${{ github.workspace }}/kernel/common
+        run: |
+          set -euo pipefail
+          for p in "${{ github.workspace }}"/.github/patches/usb-arsenal/6.12/*.patch; do
+            if patch -p1 --forward --dry-run < "$p" >/dev/null; then
+              patch -p1 --forward --no-backup-if-mismatch < "$p"
+            else
+              echo "::warning::USB Arsenal patch did not apply, skipped: $(basename "$p")"
+            fi
+          done
+
+      - name: Enable RNDIS gadget (USB Arsenal 'tether --rndis')
+        uses: ./.github/actions/set-kernel-config
+        with:
+          config_list: |
+            CONFIG_USB_CONFIGFS_RNDIS=y
+
       - name: Enable BPF Stack (BTF + eBPF + FUSE-BPF)
         if: contains(inputs.feature_set, 'BPF')
         uses: ./.github/actions/btf
