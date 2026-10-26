@@ -1,0 +1,20 @@
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 5f04267..44de7bf 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -3278,6 +3278,15 @@ static int early_mod_check(struct load_info *info, int flags)
+ {
+ 	int err;
+ 
++	/*
++	 * CIFS=y builds netfs in, but the stock system_dlkm still lists netfs.ko
++	 * in modules.load. Loading it fails on duplicate symbols and libmodprobe
++	 * then drops every module after it (modem data, Bluetooth). Report it as
++	 * already loaded, which libmodprobe accepts.
++	 */
++	if (IS_BUILTIN(CONFIG_NETFS_SUPPORT) && !strcmp(info->name, "netfs"))
++		return -EEXIST;
++
+ 	/*
+ 	 * Now that we know we have the correct module name, check
+ 	 * if it's blacklisted.

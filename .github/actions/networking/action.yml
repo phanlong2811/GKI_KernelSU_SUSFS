@@ -34,3 +34,8 @@ runs:
       uses: ./.github/actions/cifs
       with:
         version: ${{ inputs.version }}
+
+    - name: Let stock netfs.ko load as already loaded (cifs-test branch only)
+      shell: bash
+      working-directory: ${{ github.workspace }}/kernel/common
+      run: patch -p1 --forward --no-backup-if-mismatch < "${{ github.workspace }}/.github/patches/cifs/0001-module-treat-builtin-netfs-as-loaded.patch"
