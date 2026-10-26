@@ -29,3 +29,8 @@ runs:
 
     # CIFS intentionally NOT enabled: CONFIG_CIFS=y/NETFS_SUPPORT=y (with netfs.ko
     # dropped from modules.bzl) kills mobile data on Xiaomi 25128PNA1C android16-6.12.
+
+    - name: Setup CIFS (cifs-test branch only)
+      uses: ./.github/actions/cifs
+      with:
+        version: ${{ inputs.version }}
